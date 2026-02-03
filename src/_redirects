@@ -1,0 +1,6 @@
+# Redirect everything to index.html (Angular handles routing)
+# 200 = success
+/*    /index.html   200
+
+# Optional: handle Netlify admin (if used)
+# /admin/*   /admin/index.html   200
