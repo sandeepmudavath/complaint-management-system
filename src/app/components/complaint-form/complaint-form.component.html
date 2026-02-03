@@ -1,0 +1,161 @@
+<div class="complaint-form-page">
+  <div class="page-header">
+    <button class="back-btn" (click)="cancel()">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <div class="header-content">
+      <h1>{{ isEditMode ? 'Edit Complaint' : 'New Complaint' }}</h1>
+      <p>{{ isEditMode ? 'Update the complaint details' : 'Fill in the details to create a new complaint' }}</p>
+    </div>
+  </div>
+
+  <div class="loading-overlay" *ngIf="loading">
+    <span class="material-icons spinning">sync</span>
+    <span>Loading complaint data...</span>
+  </div>
+
+  <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <div class="form-sections">
+      <div class="form-section">
+        <h2>
+          <span class="material-icons">description</span>
+          Complaint Information
+        </h2>
+
+        <div class="form-group">
+          <label for="title">Title <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="title" 
+            formControlName="title"
+            placeholder="Brief description of the issue"
+            [class.error]="complaintForm.get('title')?.touched && complaintForm.get('title')?.invalid">
+          <span class="error-message" *ngIf="getFieldError('title')">{{ getFieldError('title') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description <span class="required">*</span></label>
+          <textarea 
+            id="description" 
+            formControlName="description"
+            rows="5"
+            placeholder="Provide detailed information about the complaint..."
+            [class.error]="complaintForm.get('description')?.touched && complaintForm.get('description')?.invalid">
+          </textarea>
+          <div class="textarea-footer">
+            <span class="error-message" *ngIf="getFieldError('description')">{{ getFieldError('description') }}</span>
+            <span class="char-count">{{ complaintForm.get('description')?.value?.length || 0 }}/1000</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category <span class="required">*</span></label>
+            <select id="category" formControlName="category">
+              <option *ngFor="let opt of categoryOptions" [value]="opt.value">{{ opt.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priority <span class="required">*</span></label>
+            <div class="priority-options">
+              <label 
+                *ngFor="let opt of priorityOptions" 
+                class="priority-option"
+                [class.selected]="complaintForm.get('priority')?.value === opt.value"
+                [style.--priority-color]="opt.color">
+                <input type="radio" formControlName="priority" [value]="opt.value">
+                <span class="priority-label">{{ opt.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="isEditMode">
+          <label for="status">Status</label>
+          <select id="status" formControlName="status">
+            <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>
+          <span class="material-icons">person</span>
+          Customer Information
+        </h2>
+
+        <div class="form-group">
+          <label for="customerName">Full Name <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="customerName" 
+            formControlName="customerName"
+            placeholder="Customer's full name"
+            [class.error]="complaintForm.get('customerName')?.touched && complaintForm.get('customerName')?.invalid">
+          <span class="error-message" *ngIf="getFieldError('customerName')">{{ getFieldError('customerName') }}</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerEmail">Email Address <span class="required">*</span></label>
+            <input 
+              type="email" 
+              id="customerEmail" 
+              formControlName="customerEmail"
+              placeholder="customer@email.com"
+              [class.error]="complaintForm.get('customerEmail')?.touched && complaintForm.get('customerEmail')?.invalid">
+            <span class="error-message" *ngIf="getFieldError('customerEmail')">{{ getFieldError('customerEmail') }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="customerPhone">Phone Number</label>
+            <input 
+              type="tel" 
+              id="customerPhone" 
+              formControlName="customerPhone"
+              placeholder="+1 234-567-8900">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" *ngIf="isEditMode">
+        <h2>
+          <span class="material-icons">assignment_ind</span>
+          Assignment & Resolution
+        </h2>
+
+        <div class="form-group">
+          <label for="assignedTo">Assigned To</label>
+          <input 
+            type="text" 
+            id="assignedTo" 
+            formControlName="assignedTo"
+            placeholder="Agent name">
+        </div>
+
+        <div class="form-group">
+          <label for="resolution">Resolution Notes</label>
+          <textarea 
+            id="resolution" 
+            formControlName="resolution"
+            rows="4"
+            placeholder="Add resolution details when the complaint is resolved...">
+          </textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="submitting">
+        <span class="material-icons spinning" *ngIf="submitting">sync</span>
+        <span *ngIf="!submitting">{{ isEditMode ? 'Update Complaint' : 'Create Complaint' }}</span>
+        <span *ngIf="submitting">{{ isEditMode ? 'Updating...' : 'Creating...' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

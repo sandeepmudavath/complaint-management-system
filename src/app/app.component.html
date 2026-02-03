@@ -1,0 +1,13 @@
+<!-- Login Page (No Layout) -->
+<router-outlet *ngIf="!showLayout"></router-outlet>
+
+<!-- Main App Layout -->
+<div class="app-container" [class.sidebar-collapsed]="isSidebarCollapsed" *ngIf="showLayout">
+  <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>
+  <div class="main-content">
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

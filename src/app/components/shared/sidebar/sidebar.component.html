@@ -1,0 +1,50 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon material-icons">support_agent</span>
+      <span class="logo-text" *ngIf="!isCollapsed">CMS</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <span class="nav-label" *ngIf="!isCollapsed">Main Menu</span>
+      <ul class="nav-list">
+        <li *ngFor="let item of menuItems">
+          <a [routerLink]="item.route" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+             class="nav-link"
+             [title]="isCollapsed ? item.label : ''">
+            <span class="material-icons">{{ item.icon }}</span>
+            <span class="nav-text" *ngIf="!isCollapsed">{{ item.label }}</span>
+            <span class="nav-badge" *ngIf="item.badge && !isCollapsed">{{ item.badge }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-label" *ngIf="!isCollapsed">Others</span>
+      <ul class="nav-list">
+        <li *ngFor="let item of secondaryItems">
+          <a [routerLink]="item.route" 
+             routerLinkActive="active"
+             class="nav-link"
+             [title]="isCollapsed ? item.label : ''">
+            <span class="material-icons">{{ item.icon }}</span>
+            <span class="nav-text" *ngIf="!isCollapsed">{{ item.label }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="footer-card">
+      <span class="material-icons">rocket_launch</span>
+      <p>Upgrade to Pro</p>
+      <span class="footer-text">Get advanced features</span>
+    </div>
+  </div> -->
+</aside>

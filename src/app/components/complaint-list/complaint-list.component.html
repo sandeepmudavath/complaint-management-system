@@ -1,0 +1,144 @@
+<div class="complaint-list-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>All Complaints</h1>
+      <p>Manage and track all customer complaints</p>
+    </div>
+    <button class="btn btn-primary" routerLink="/complaints/new">
+      <span class="material-icons">add</span>
+      New Complaint
+    </button>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input 
+        type="text" 
+        placeholder="Search by title, customer, or ID..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()">
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+        <option value="">All Status</option>
+        <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+
+      <select [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+        <option value="">All Categories</option>
+        <option *ngFor="let opt of categoryOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+
+      <select [(ngModel)]="selectedPriority" (change)="onFilterChange()">
+        <option value="">All Priorities</option>
+        <option *ngFor="let opt of priorityOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+
+      <button 
+        class="btn btn-secondary" 
+        (click)="clearFilters()"
+        *ngIf="searchTerm || selectedStatus || selectedCategory || selectedPriority">
+        <span class="material-icons">clear</span>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div class="results-info">
+    <span>Showing {{ paginatedComplaints.length }} of {{ filteredComplaints.length }} complaints</span>
+  </div>
+
+  <div class="complaints-table-container">
+    <table class="complaints-table" *ngIf="!loading && paginatedComplaints.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Customer</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let complaint of paginatedComplaints" (click)="viewComplaint(complaint.id)">
+          <td class="id-cell">{{ complaint.id }}</td>
+          <td class="title-cell">
+            <div class="title-content">
+              <div class="category-icon" [attr.data-category]="complaint.category">
+                <span class="material-icons">{{ getCategoryIcon(complaint.category) }}</span>
+              </div>
+              <span>{{ complaint.title }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="customer-info">
+              <span class="customer-name">{{ complaint.customerName }}</span>
+              <span class="customer-email">{{ complaint.customerEmail }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="category-label">{{ complaint.category | titlecase }}</span>
+          </td>
+          <td>
+            <app-status-badge [priority]="complaint.priority" type="priority"></app-status-badge>
+          </td>
+          <td>
+            <app-status-badge [status]="complaint.status" type="status"></app-status-badge>
+          </td>
+          <td class="date-cell">{{ complaint.createdAt | date:'MMM d, yyyy' }}</td>
+          <td class="actions-cell">
+            <button class="action-btn" (click)="editComplaint($event, complaint.id)" title="Edit">
+              <span class="material-icons">edit</span>
+            </button>
+            <button class="action-btn delete" (click)="deleteComplaint($event, complaint.id)" title="Delete">
+              <span class="material-icons">delete</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!loading && paginatedComplaints.length === 0">
+      <span class="material-icons">search_off</span>
+      <h3>No complaints found</h3>
+      <p>Try adjusting your search or filters</p>
+      <button class="btn btn-primary" (click)="clearFilters()">Clear Filters</button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <span class="material-icons spinning">sync</span>
+      <span>Loading complaints...</span>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button 
+      class="pagination-btn" 
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1">
+      <span class="material-icons">chevron_left</span>
+    </button>
+    
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        class="page-btn"
+        [class.active]="currentPage === i + 1"
+        (click)="goToPage(i + 1)">
+        {{ i + 1 }}
+      </button>
+    </div>
+    
+    <button 
+      class="pagination-btn" 
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages">
+      <span class="material-icons">chevron_right</span>
+    </button>
+  </div>
+</div>

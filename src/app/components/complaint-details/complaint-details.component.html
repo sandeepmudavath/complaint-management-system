@@ -1,0 +1,164 @@
+<div class="complaint-details-page">
+  <div class="loading-state" *ngIf="loading">
+    <span class="material-icons spinning">sync</span>
+    <span>Loading complaint details...</span>
+  </div>
+
+  <div class="not-found" *ngIf="!loading && !complaint">
+    <span class="material-icons">search_off</span>
+    <h2>Complaint Not Found</h2>
+    <p>The complaint you're looking for doesn't exist or has been deleted.</p>
+    <button class="btn btn-primary" routerLink="/complaints">
+      <span class="material-icons">arrow_back</span>
+      Back to Complaints
+    </button>
+  </div>
+
+  <ng-container *ngIf="!loading && complaint">
+    <div class="page-header">
+      <button class="back-btn" (click)="goBack()">
+        <span class="material-icons">arrow_back</span>
+      </button>
+      <div class="header-content">
+        <div class="complaint-id">{{ complaint.id }}</div>
+        <h1>{{ complaint.title }}</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="editComplaint()">
+          <span class="material-icons">edit</span>
+          Edit
+        </button>
+        <button class="btn btn-danger" (click)="deleteComplaint()">
+          <span class="material-icons">delete</span>
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="main-content">
+        <div class="content-card">
+          <div class="card-header">
+            <h2>Description</h2>
+          </div>
+          <p class="description">{{ complaint.description }}</p>
+        </div>
+
+        <div class="content-card timeline-card">
+          <div class="card-header">
+            <h2>Activity Timeline</h2>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-icon created">
+                <span class="material-icons">add_circle</span>
+              </div>
+              <div class="timeline-content">
+                <span class="timeline-title">Complaint Created</span>
+                <span class="timeline-date">{{ complaint.createdAt | date:'MMM d, yyyy, h:mm a' }}</span>
+              </div>
+            </div>
+
+            <div class="timeline-item" *ngIf="complaint.assignedTo">
+              <div class="timeline-icon assigned">
+                <span class="material-icons">person_add</span>
+              </div>
+              <div class="timeline-content">
+                <span class="timeline-title">Assigned to {{ complaint.assignedTo }}</span>
+                <span class="timeline-date">{{ complaint.updatedAt | date:'MMM d, yyyy, h:mm a' }}</span>
+              </div>
+            </div>
+
+            <div class="timeline-item" *ngIf="complaint.resolvedAt">
+              <div class="timeline-icon resolved">
+                <span class="material-icons">check_circle</span>
+              </div>
+              <div class="timeline-content">
+                <span class="timeline-title">Complaint Resolved</span>
+                <span class="timeline-date">{{ complaint.resolvedAt | date:'MMM d, yyyy, h:mm a' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card" *ngIf="complaint.resolution">
+          <div class="card-header">
+            <h2>Resolution</h2>
+          </div>
+          <p class="resolution">{{ complaint.resolution }}</p>
+        </div>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="content-card status-card">
+          <div class="card-header">
+            <h2>Status</h2>
+          </div>
+          <div class="status-selector">
+            <button 
+              *ngFor="let opt of statusOptions"
+              class="status-btn"
+              [class.active]="complaint.status === opt.value"
+              [style.--status-color]="opt.color"
+              (click)="updateStatus(opt.value)">
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="content-card info-card">
+          <div class="card-header">
+            <h2>Details</h2>
+          </div>
+          <div class="info-list">
+            <div class="info-item">
+              <span class="info-label">Category</span>
+              <div class="info-value category">
+                <span class="material-icons">{{ getCategoryIcon(complaint.category) }}</span>
+                {{ getCategoryLabel(complaint.category) }}
+              </div>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Priority</span>
+              <app-status-badge [priority]="complaint.priority" type="priority"></app-status-badge>
+            </div>
+            <div class="info-item" *ngIf="complaint.assignedTo">
+              <span class="info-label">Assigned To</span>
+              <span class="info-value">{{ complaint.assignedTo }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Created</span>
+              <span class="info-value">{{ complaint.createdAt | date:'MMM d, yyyy' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Last Updated</span>
+              <span class="info-value">{{ complaint.updatedAt | date:'MMM d, yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card customer-card">
+          <div class="card-header">
+            <h2>Customer Information</h2>
+          </div>
+          <div class="customer-details">
+            <div class="customer-avatar">
+              <span class="material-icons">person</span>
+            </div>
+            <div class="customer-info">
+              <span class="customer-name">{{ complaint.customerName }}</span>
+              <a href="mailto:{{ complaint.customerEmail }}" class="customer-email">
+                <span class="material-icons">email</span>
+                {{ complaint.customerEmail }}
+              </a>
+              <a *ngIf="complaint.customerPhone" href="tel:{{ complaint.customerPhone }}" class="customer-phone">
+                <span class="material-icons">phone</span>
+                {{ complaint.customerPhone }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

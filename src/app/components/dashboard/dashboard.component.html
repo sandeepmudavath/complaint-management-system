@@ -1,0 +1,132 @@
+<div class="dashboard">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's an overview of your complaint management system.</p>
+    </div>
+    <button class="btn btn-primary" routerLink="/complaints/new">
+      <span class="material-icons">add</span>
+      New Complaint
+    </button>
+  </div>
+
+  <div class="stats-grid">
+    <app-stat-card
+      title="Total Complaints"
+      [value]="stats.total"
+      icon="folder"
+      color="primary"
+      [trend]="12"
+      trendLabel="vs last month">
+    </app-stat-card>
+    
+    <app-stat-card
+      title="Open"
+      [value]="stats.open"
+      icon="pending_actions"
+      color="info"
+      [trend]="-5"
+      trendLabel="vs last month">
+    </app-stat-card>
+    
+    <app-stat-card
+      title="In Progress"
+      [value]="stats.inProgress"
+      icon="autorenew"
+      color="warning"
+      [trend]="8"
+      trendLabel="vs last month">
+    </app-stat-card>
+    
+    <app-stat-card
+      title="Resolved"
+      [value]="stats.resolved"
+      icon="check_circle"
+      color="success"
+      [trend]="15"
+      trendLabel="vs last month">
+    </app-stat-card>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="content-card recent-complaints">
+      <div class="card-header">
+        <h2>Recent Complaints</h2>
+        <a routerLink="/complaints" class="view-all">
+          View all
+          <span class="material-icons">arrow_forward</span>
+        </a>
+      </div>
+      
+      <div class="complaints-list" *ngIf="!loading">
+        <div class="complaint-item" *ngFor="let complaint of recentComplaints" 
+             [routerLink]="['/complaints', complaint.id]">
+          <div class="complaint-icon" [attr.data-category]="complaint.category">
+            <span class="material-icons">{{ getCategoryIcon(complaint.category) }}</span>
+          </div>
+          <div class="complaint-info">
+            <h4>{{ complaint.title }}</h4>
+            <p>{{ complaint.customerName }} • {{ complaint.id }}</p>
+          </div>
+          <div class="complaint-meta">
+            <app-status-badge [status]="complaint.status" type="status"></app-status-badge>
+            <span class="complaint-date">{{ complaint.createdAt | date:'MMM d' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-state" *ngIf="loading">
+        <span class="material-icons spinning">sync</span>
+        <span>Loading complaints...</span>
+      </div>
+    </div>
+
+    <div class="content-card quick-stats">
+      <div class="card-header">
+        <h2>Quick Stats</h2>
+      </div>
+      
+      <div class="quick-stats-content">
+        <div class="stat-item">
+          <div class="stat-bar">
+            <div class="bar-fill" style="width: 75%; background: linear-gradient(90deg, #6366f1, #8b5cf6);"></div>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Response Rate</span>
+            <span class="stat-number">75%</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-bar">
+            <div class="bar-fill" style="width: 92%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Customer Satisfaction</span>
+            <span class="stat-number">92%</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-bar">
+            <div class="bar-fill" style="width: 48%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Avg. Resolution Time</span>
+            <span class="stat-number">2.4 days</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-bar">
+            <div class="bar-fill" style="width: 88%; background: linear-gradient(90deg, #3b82f6, #2563eb);"></div>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">First Contact Resolution</span>
+            <span class="stat-number">88%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

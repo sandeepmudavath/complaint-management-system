@@ -1,0 +1,64 @@
+<header class="header">
+  <div class="header-left">
+    <button class="menu-toggle" (click)="onToggleSidebar()">
+      <span class="material-icons">menu</span>
+    </button>
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input type="text" placeholder="Search complaints...">
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button class="icon-btn notification-btn">
+      <span class="material-icons">notifications</span>
+      <span class="badge" *ngIf="notifications > 0">{{ notifications }}</span>
+    </button>
+    
+    <div class="user-menu-container">
+      <button class="user-menu" (click)="toggleUserMenu()">
+        <div class="user-avatar">
+          <span>{{ getUserInitials() }}</span>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ currentUser?.name || 'User' }}</span>
+          <span class="user-role" [ngClass]="getRoleBadgeClass()">
+            {{ currentUser?.role | titlecase }}
+          </span>
+        </div>
+        <span class="material-icons dropdown-icon" [class.open]="showUserMenu">expand_more</span>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div class="dropdown-menu" *ngIf="showUserMenu" (clickOutside)="closeUserMenu()">
+        <div class="dropdown-header">
+          <div class="user-avatar large">
+            <span>{{ getUserInitials() }}</span>
+          </div>
+          <div class="dropdown-user-info">
+            <span class="dropdown-user-name">{{ currentUser?.name }}</span>
+            <span class="dropdown-user-email">{{ currentUser?.email }}</span>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" routerLink="/dashboard" (click)="closeUserMenu()">
+          <span class="material-icons">dashboard</span>
+          Dashboard
+        </a>
+        <a class="dropdown-item" href="#" (click)="closeUserMenu()">
+          <span class="material-icons">person</span>
+          Profile Settings
+        </a>
+        <a class="dropdown-item" href="#" (click)="closeUserMenu()">
+          <span class="material-icons">settings</span>
+          Account Settings
+        </a>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item logout" (click)="logout()">
+          <span class="material-icons">logout</span>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
