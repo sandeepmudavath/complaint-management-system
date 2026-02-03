@@ -1,1 +1,11 @@
-node_modules
+# Node dependencies
+node_modules/
+
+# Angular build output
+dist/
+
+# Angular CLI cache
+.angular/
+
+# Optional (good practice)
+.env
